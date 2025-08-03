@@ -1,171 +1,22 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <title>เกาะ NFT - Bitkub Chain</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <!-- Three.js & OrbitControls -->
-  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/controls/OrbitControls.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/web3@1.8.2/dist/web3.min.js"></script>
-
-  <style>
-    body { margin: 0; overflow: hidden; }
-    canvas { display: block; }
-
-    #ui {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      z-index: 10;
-      background: rgba(255,255,255,0.9);
-      padding: 10px 15px;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-      font-family: sans-serif;
-    }
-
-    #connectButton {
-      background-color: #2e8b57;
-      color: white;
-      border: none;
-      padding: 10px 15px;
-      font-size: 16px;
-      cursor: pointer;
-      border-radius: 5px;
-      margin-bottom: 10px;
-    }
-
-    #connectButton:hover {
-      background-color: #256c45;
-    }
-
-    #account {
-      font-weight: bold;
-      color: #333;
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <title>Land 3D - Bitkub Chain</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-
   <div id="ui">
     <button id="connectButton">🔗 เชื่อมต่อ MetaMask</button>
     <div id="account">บัญชี: -</div>
   </div>
 
-  <script>
-    // MetaMask
-    document.getElementById("connectButton").addEventListener("click", async () => {
-      if (window.ethereum) {
-        const web3 = new Web3(window.ethereum);
-        try {
-          const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
-          const netId = await web3.eth.net.getId();
-          if (netId !== 96) {
-            alert("กรุณาเชื่อมต่อ Bitkub Chain Mainnet (Chain ID: 96)");
-          } else {
-            document.getElementById("account").innerText = "บัญชี: " + accounts[0];
-          }
-        } catch (error) {
-          alert("ไม่สามารถเชื่อมต่อกระเป๋าได้");
-        }
-      } else {
-        alert("กรุณาติดตั้ง MetaMask ก่อนใช้งาน");
-      }
-    });
+  <!-- Three.js -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/controls/OrbitControls.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/web3@1.8.2/dist/web3.min.js"></script>
 
-    // Three.js Scene
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x87ceeb); // ฟ้าทะเล
-
-    const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.set(0, 5, 12);
-
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
-
-    const controls = new THREE.OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-
-    // พื้นน้ำ
-    const seaGeometry = new THREE.PlaneGeometry(100, 100);
-    const seaMaterial = new THREE.MeshStandardMaterial({ color: 0x4fc3f7 });
-    const sea = new THREE.Mesh(seaGeometry, seaMaterial);
-    sea.rotation.x = -Math.PI / 2;
-    sea.position.y = -3;
-    scene.add(sea);
-
-    // เกาะหลัก
-    const islandGeometry = new THREE.SphereGeometry(4, 64, 64);
-    const islandMaterial = new THREE.MeshStandardMaterial({ color: 0x8bc34a, flatShading: true });
-    const island = new THREE.Mesh(islandGeometry, islandMaterial);
-    island.scale.y = 0.3;
-    island.rotation.x = Math.PI / 2;
-    island.position.y = -1.5;
-    scene.add(island);
-
-    // ที่ดิน Plot บนเกาะ
-    const plotPositions = [
-      [2, -0.5, 0],
-      [-2, -0.5, 0],
-      [0, -0.5, 2],
-      [0, -0.5, -2],
-      [0, 0.2, 0],
-    ];
-
-    plotPositions.forEach((pos, index) => {
-      const plot = new THREE.Mesh(
-        new THREE.BoxGeometry(1, 0.2, 1),
-        new THREE.MeshStandardMaterial({ color: 0xffeb3b })
-      );
-      plot.position.set(...pos);
-      plot.userData = { id: index + 1 };
-      scene.add(plot);
-    });
-
-    // แสงสว่าง
-    const light = new THREE.DirectionalLight(0xffffff, 1);
-    light.position.set(5, 10, 5);
-    scene.add(light);
-
-    // ตรวจจับคลิก
-    const raycaster = new THREE.Raycaster();
-    const mouse = new THREE.Vector2();
-
-    window.addEventListener('click', (event) => {
-      mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-      mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-      raycaster.setFromCamera(mouse, camera);
-      const intersects = raycaster.intersectObjects(scene.children);
-
-      for (let i = 0; i < intersects.length; i++) {
-        const obj = intersects[i].object;
-        if (obj.userData.id) {
-          alert("คุณคลิกแปลงที่ดินแปลงที่ " + obj.userData.id);
-          break;
-        }
-      }
-    });
-
-    // Responsive
-    window.addEventListener('resize', () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    });
-
-    // Render loop
-    function animate() {
-      requestAnimationFrame(animate);
-      controls.update();
-      renderer.render(scene, camera);
-    }
-
-    animate();
-  </script>
-
+  <script src="main.js"></script>
 </body>
 </html>
