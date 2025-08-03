@@ -2,21 +2,36 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8" />
-  <title>Land 3D - Bitkub Chain</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <div id="ui">
-    <button id="connectButton">🔗 เชื่อมต่อ MetaMask</button>
-    <div id="account">บัญชี: -</div>
-  </div>
+  <title>Land 3D Game on Bitkub Chain</title>
 
-  <!-- Three.js -->
-  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/controls/OrbitControls.min.js"></script>
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet" />
+
+  <!-- Web3.js -->
   <script src="https://cdn.jsdelivr.net/npm/web3@1.8.2/dist/web3.min.js"></script>
 
-  <script src="main.js"></script>
+  <!-- Style -->
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header>
+    <h1>🎮 Land 3D - Bitkub Chain Game</h1>
+    <button id="connectButton">เชื่อมต่อ MetaMask</button>
+    <div id="accountArea"></div>
+  </header>
+
+  <main>
+    <section id="gameSection">
+      <h2>แผนที่ที่ดิน 3D</h2>
+      <div id="mapGrid"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>สร้างโดย ChatGPT | เชื่อม Bitkub Chain Mainnet (Chain ID: 96)</p>
+  </footer>
+
+  <script src="js/app.js"></script>
 </body>
 </html>
